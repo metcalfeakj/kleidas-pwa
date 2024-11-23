@@ -13,7 +13,7 @@
 	let error: string | null = null;
 
 	let copiedVerses = ''; // Tracks the copied verses
-	let resetTimer: NodeJS.Timeout | null = null; // Timer for clearing the copied state
+	let resetTimer: ReturnType<typeof setTimeout> | null = null; // Timer for clearing the copied state
 
 	const oldTestamentAbbreviations = [
 		'gen',
@@ -243,9 +243,9 @@
 
 	<div class="app-layout">
 		<!-- Sidebar for Navigation -->
-		             <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
- 
+		<!-- svelte-ignore a11y-click-events-have-key-events -->
+		<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+
 		<aside
 			bind:this={sidebarElement}
 			class={`bible-navigation ${isSidebarOpen ? 'open' : ''}`}
