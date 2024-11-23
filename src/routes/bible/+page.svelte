@@ -9,8 +9,11 @@
 	let selectedBook = 'John';
 	let selectedChapter = 1;
 	let chapters: any[] = [];
-	let verses: string | any[] = [];
+	let verses: any[] = [];
 	let error: string | null = null;
+
+	let copiedVerses = ''; // Tracks the copied verses
+	let resetTimer: NodeJS.Timeout | null = null; // Timer for clearing the copied state
 
 	const oldTestamentAbbreviations = [
 		'gen',
@@ -124,19 +127,36 @@
 			JSON.stringify({ book: selectedBook, chapter: selectedChapter })
 		);
 	}
+	let isSidebarOpen = false; // Tracks if the sidebar is open (mobile view)
+	let sidebarElement: HTMLElement | null = null; // Sidebar element reference
+
+	// Toggle sidebar visibility
+	function toggleSidebar() {
+		isSidebarOpen = !isSidebarOpen;
+	}
+	function handleOutsideClick(event: MouseEvent) {
+		const sidebarElement = document.querySelector('.bible-navigation');
+		if (sidebarElement && !sidebarElement.contains(event.target as Node)) {
+			isSidebarOpen = false; // Close the sidebar
+		}
+	}
 
 	onMount(async () => {
 		try {
-			loadCachedState();
+			loadCachedState(); // Load cached state if any
 			books = await db.table('books').toArray();
 			oldTestament = addAbbreviations(filterBooksByTestament(oldTestamentAbbreviations));
 			newTestament = addAbbreviations(filterBooksByTestament(newTestamentAbbreviations));
-			updateChapters();
+
+			// Ensure chapters are updated for the selected book
+			await updateChapters();
+
+			// Add event listener for outside clicks to close the sidebar
+			document.addEventListener('click', handleOutsideClick);
 		} catch (err) {
 			handleError(err, 'Failed to load books. Please try again later.');
 		}
 	});
-
 	async function updateChapters() {
 		error = null;
 		verses = []; // Clear verses when changing book
@@ -148,10 +168,14 @@
 		}
 
 		chapters = Array.from({ length: book.TotalChapters }, (_, i) => i + 1);
-		selectedChapter = 1; // Reset to Chapter 1
-		await fetchVerses(); // Automatically load the first chapter
-	}
 
+		// Do not reset chapter if it's already set
+		if (!chapters.includes(selectedChapter)) {
+			selectedChapter = 1; // Reset to Chapter 1 only if current chapter is invalid
+		}
+
+		await fetchVerses(); // Automatically load the chapter
+	}
 	async function fetchVerses() {
 		error = null;
 		verses = [];
@@ -162,43 +186,48 @@
 				(ch: { ChapterNumber: number }) => ch.ChapterNumber === selectedChapter
 			);
 			if (!chapter) throw new Error(`Chapter ${selectedChapter} not found in "${selectedBook}".`);
-			verses = chapter.Verses;
+			verses = chapter.Verses.map((verse: any) => ({ ...verse, copied: false }));
 			saveCachedState();
 		} catch (err) {
 			handleError(err, 'Failed to load verses.');
 		}
 	}
 
-	let isSidebarOpen = false; // Tracks if the sidebar is open (mobile view)
-
-	// Toggle sidebar visibility
-	function toggleSidebar() {
-		isSidebarOpen = !isSidebarOpen;
-	}
-
 	/**
 	 * Function to copy a verse to clipboard and provide feedback
 	 * @param {object} verse - The verse object to copy
 	 */
-	function copyToClipboard(verse: { VerseNumber: any; Text: any; copied: boolean; }) {
-		const text = `${verse.VerseNumber}: ${verse.Text}`;
-		navigator.clipboard
-			.writeText(text)
-			.then(() => {
-				// Update the verse's copied property
-				verse.copied = true;
+	function copyToClipboard(verse: {
+		VerseNumber: any;
+		Text: any;
+		copied: boolean;
+		appended?: boolean;
+	}) {
+		const verseText = `${getAbbreviation(selectedBook)} ${selectedChapter}:${verse.VerseNumber}\n${verse.Text}`;
 
-				// Trigger Svelte reactivity by replacing the verse in the array
-				verses = verses.map((v: { VerseNumber: any; }) =>
-					v.VerseNumber === verse.VerseNumber ? { ...v, copied: true } : v
+		// Determine if this is an appended verse
+		const isAppending = copiedVerses !== '';
+
+		// Append the new verse to the copied text
+		copiedVerses = isAppending ? `${copiedVerses}\n${verseText}` : verseText;
+
+		// Update the clipboard
+		navigator.clipboard
+			.writeText(copiedVerses)
+			.then(() => {
+				// Mark the verse as either copied or appended
+				verses = verses.map((v) =>
+					v.VerseNumber === verse.VerseNumber
+						? { ...v, copied: !isAppending, appended: isAppending }
+						: v
 				);
 
-				// Reset after 2 seconds
-				setTimeout(() => {
-					verses = verses.map((v: { VerseNumber: any; }) =>
-						v.VerseNumber === verse.VerseNumber ? { ...v, copied: false } : v
-					);
-				}, 2000);
+				// Reset the copied and appended states after the timeout
+				if (resetTimer) clearTimeout(resetTimer);
+				resetTimer = setTimeout(() => {
+					copiedVerses = ''; // Clear copied verses
+					verses = verses.map((v) => ({ ...v, copied: false, appended: false })); // Reset states
+				}, 2000); // Adjust timeout as needed
 			})
 			.catch((err) => {
 				console.error('Failed to copy text:', err);
@@ -208,13 +237,20 @@
 
 <main class="bible-app">
 	<!-- Mobile Navigation Toggle -->
-	<button class="navigation-toggle" on:click={toggleSidebar}>
+	<button class="navigation-toggle" on:click|stopPropagation={toggleSidebar}>
 		{isSidebarOpen ? 'Close Navigation' : 'Open Navigation'}
 	</button>
 
 	<div class="app-layout">
 		<!-- Sidebar for Navigation -->
-		<aside class={`bible-navigation ${isSidebarOpen ? 'open' : ''}`}>
+		             <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+ 
+		<aside
+			bind:this={sidebarElement}
+			class={`bible-navigation ${isSidebarOpen ? 'open' : ''}`}
+			on:click|stopPropagation
+		>
 			<div class="bible-navigation-lists">
 				<!-- Old Testament List -->
 				<div class="old-testament-list">
@@ -228,7 +264,6 @@
 								on:click={() => {
 									selectedBook = book.BookName;
 									updateChapters();
-									isSidebarOpen = false; /* Close sidebar after selecting */
 								}}
 							>
 								{getAbbreviation(book.BookName)}
@@ -249,7 +284,6 @@
 								on:click={() => {
 									selectedBook = book.BookName;
 									updateChapters();
-									isSidebarOpen = false; /* Close sidebar after selecting */
 								}}
 							>
 								{getAbbreviation(book.BookName)}
@@ -292,11 +326,13 @@
 						<!-- svelte-ignore a11y-click-events-have-key-events -->
 						<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 						<li
-							class={verse.copied ? 'copied' : ''}
+							class={verse.copied ? 'copied' : verse.appended ? 'appended' : ''}
 							on:click={() => copyToClipboard(verse)}
 							title="Click to copy this verse"
 						>
-							<span class="copy-status">{verse.copied ? 'Copied!' : ''}</span>
+							<span class="copy-status">
+								{verse.copied ? 'Copied!' : verse.appended ? 'Appended!' : ''}
+							</span>
 							<strong>{verse.VerseNumber}</strong>: {verse.Text}
 						</li>
 					{/each}
@@ -307,7 +343,6 @@
 </main>
 
 <style>
-
 	/* Global Styling */
 	.bible-app {
 		font-family: Arial, sans-serif;
@@ -318,21 +353,21 @@
 		height: 100%; /* Confine app to the viewport */
 	}
 
-	/* Sidebar for Navigation */
 	.bible-navigation {
 		position: fixed;
 		top: 0;
 		left: 0;
-		height: 100vh; /* Full height of the viewport */
+		height: 100vh;
 		width: 300px;
 		background: #f9f9f9;
-		padding: 10px;
 		box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
 		z-index: 1000;
-		display: flex;
-		flex-direction: column;
-		gap: 10px;
-		transition: transform 0.3s ease-in-out; /* Smooth transition for mobile toggle */
+		transform: translateX(-100%); /* Initially hidden */
+		transition: transform 0.3s ease-in-out;
+	}
+
+	.bible-navigation.open {
+		transform: translateX(0); /* Slide in when open */
 	}
 
 	/* Main Layout */
@@ -522,5 +557,30 @@
 		.verse-display {
 			font-size: 1em;
 		}
+	}
+
+	.verse-display li.appended {
+		background-color: #fff3cd; /* Light yellow background */
+		color: #856404; /* Dark yellow text */
+	}
+
+	.verse-display li .copy-status {
+		position: absolute;
+		top: -20px;
+		left: 0;
+		font-size: 0.9em;
+		font-weight: bold;
+		opacity: 0;
+		transition: opacity 0.3s ease-in-out;
+	}
+
+	.verse-display li.copied .copy-status {
+		color: #155724; /* Green */
+		opacity: 1;
+	}
+
+	.verse-display li.appended .copy-status {
+		color: #856404; /* Yellow */
+		opacity: 1;
 	}
 </style>
