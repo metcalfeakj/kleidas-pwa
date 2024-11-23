@@ -362,7 +362,7 @@
 		background: #f9f9f9;
 		box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
 		z-index: 1000;
-		transform: translateX(-100%); /* Initially hidden */
+		transform: none; /* Make it visible by default */
 		transition: transform 0.3s ease-in-out;
 	}
 
