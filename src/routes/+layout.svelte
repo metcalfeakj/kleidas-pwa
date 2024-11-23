@@ -1,15 +1,22 @@
-<script>
-    import { liveQuery } from "dexie";
-    import { db, populateDatabase } from "$lib/db";
-    import { onMount } from 'svelte';
-  
-    // Populate the database if it's empty
-    onMount(() => {
-      populateDatabase('/bible.json'); // Adjust path to your JSON file in the static folder
-    });
-  
-    // Use liveQuery to observe changes in the 'books' table
-    let books = liveQuery(() => db.table('books').toArray());
+<script lang="ts">
+  import { populateDatabase } from '$lib/db';
+  import { onMount } from 'svelte';
+
+  let dbReady = false;
+
+  // Wait for database population
+  async function initializeDatabase() {
+    await populateDatabase('/bible.json');
+    dbReady = true; // Set the flag once the database is ready
+  }
+
+  onMount(() => {
+    initializeDatabase();
+  });
 </script>
-  
-<slot />
+
+{#if dbReady}
+  <slot />
+{:else}
+  <p>Loading Bible data...</p>
+{/if}

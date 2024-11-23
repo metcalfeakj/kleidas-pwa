@@ -27,22 +27,20 @@ db.version(1).stores({
 // Function to populate the database
 async function populateDatabase(jsonUrl: string) {
   try {
-    // Check if the database already has data
     const count = await db.table('books').count();
     if (count > 0) {
       console.log('Bible data already exists in IndexedDB.');
       return;
     }
 
-    // Fetch the Bible JSON data
     const response = await fetch(jsonUrl);
-    const bibleData: Book[] = await response.json();
+    const bibleData = await response.json();
 
-    // Add books to the database as-is (nested structure)
     await db.table('books').bulkAdd(bibleData);
     console.log('Bible loaded into IndexedDB successfully!');
   } catch (error) {
     console.error('Error loading Bible data into IndexedDB:', error);
+    throw error; // Ensure any error propagates
   }
 }
 
