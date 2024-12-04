@@ -266,9 +266,10 @@
 <main class="bible-app">
 	<!-- Toolbar Section -->
 	<div class="toolbar">
+		
 		<div class="toolbar-left">
-			<div class="mobile-navigation-toggle">
-				<button class="toolbar-btn" on:click|stopPropagation={toggleSidebar}> 📜 Books </button>
+<div class="mobile-navigation-toggle">
+				<button class="toolbar-btn" on:click|stopPropagation={toggleSidebar}>📜</button>
 			</div>
 		</div>
 		<div class="toolbar-center">
@@ -285,9 +286,15 @@
 				class="toolbar-btn copy-btn"
 				disabled={$selectedVerses.length === 0}
 				on:click={copySelectedVerses}
-			>
-				📋 Copy
+			>📋
 			</button>
+			<button
+			class="toolbar-btn copy-btn"
+			disabled={$selectedVerses.length === 0}
+			on:click={copySelectedVerses}
+		>📋
+		</button>
+
 		</div>
 	</div>
 

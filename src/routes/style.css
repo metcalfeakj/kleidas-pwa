@@ -1,25 +1,25 @@
 .bible-app,
 .sidebar {
-    max-height: calc(100vh - 60px);
+    max-height: calc(100vh - 60px)
 }
 
 .app-layout,
 .bible-app,
 .sidebar-content {
     height: 100%;
-    display: flex;
+    display: flex
 }
 
 .app-layout {
     width: 100%;
     overflow: hidden;
-    padding-bottom: 0;
+    padding-bottom: 0
 }
 
 .sidebar,
 .toolbar {
     position: relative;
-    left: 0;
+    left: 0
 }
 
 .toolbar {
@@ -27,32 +27,31 @@
     left: 0;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-between
 }
 
 .bible-app {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
-        sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     flex-direction: column;
     margin: 0 auto;
     padding: 20px;
-    padding-left: 0px;
-    overflow-y: auto;
+    padding-left: 0;
+    overflow-y: auto
 }
 
 .sidebar {
     flex: 0 0 auto;
     background: #f9f9f9;
-    overflow-y: auto;
+    overflow-y: auto
 }
 
 .sidebar.open {
-    transform: translateX(0);
+    transform: translateX(0)
 }
 
 .sidebar-content {
     flex-direction: row;
-    gap: 10px;
+    gap: 10px
 }
 
 .chapter-section,
@@ -61,7 +60,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 5px;
+    padding: 5px
 }
 
 .sidebar-heading {
@@ -74,13 +73,13 @@
     word-break: break-word;
     white-space: nowrap;
     text-overflow: ellipsis;
-    width: 100%;
+    width: 100%
 }
 
 .book-list,
 .chapter-list {
     overflow-y: auto;
-    flex-grow: 1;
+    flex-grow: 1
 }
 
 .book-item,
@@ -99,37 +98,32 @@
     font-size: 1rem;
     font-weight: 500;
     color: #333;
-    letter-spacing: 0.5px;
-    transition:
-        background-color 0.2s,
-        color 0.2s;
+    letter-spacing: .5px;
+    transition: background-color .2s, color .2s
 }
 
 .book-item:hover,
 .chapter-item:hover {
     background: #f0f0f0;
-    color: #007bff;
+    color: #007bff
 }
 
 .book-item.selected,
 .chapter-item.selected {
     background: #007bff;
     color: #fff;
-    font-weight: 600;
+    font-weight: 600
 }
 
 .bible-display {
     flex: 1 1 auto;
-    min-width: 0;
-    overflow-y: auto;
     padding-left: 20px;
-    padding-right: 200px;
 }
 
 .display-header h2 {
     margin: 0;
     font-size: 1.5em;
-    color: #333;
+    color: #333
 }
 
 .verse-list {
@@ -137,13 +131,13 @@
     line-height: 1.6;
     max-width: 100%;
     padding: 0;
-    margin: 0;
+    margin: 0
 }
 
 .verse-container {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 10px
 }
 
 .verse-item {
@@ -153,82 +147,68 @@
     padding: 10px;
     cursor: pointer;
     border-radius: 12px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
-        sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif
 }
 
 .verse-item:hover {
-    background-color: #f2f2f7;
+    background-color: #f2f2f7
 }
 
-.copy-btn:hover:enabled,
 .verse-item.selected {
     background-color: #007aff;
-    color: #fff;
+    color: #fff
 }
 
 .verse-item.selected:hover {
-    background-color: #005bb5;
+    background-color: #005bb5
 }
 
 .verse-item,
 .verse-item.selected {
-    transition: 0.3s ease-in-out;
+    transition: .3s ease-in-out
 }
 
 .toolbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;
+
 }
 
-.toolbar-center,
-.toolbar-left,
-.toolbar-right {
-    flex: 1;
-    display: flex;
-    align-items: center;
-}
+
 
 .toolbar-center {
-    justify-content: center;
+    justify-content: center
 }
 
 .toolbar-right {
-    justify-content: flex-end;
+    justify-content: flex-end
 }
 
 .toolbar-search {
-    flex: 1;
     border: none;
     padding: 10px;
     border-radius: 5px;
     font-size: 16px;
-    width: 400px;
+    width:100%;
 }
 
 .toolbar,
 .toolbar-left,
 .toolbar-right {
     align-items: center;
-    display: flex;
+    display: flex
 }
 
 .sidebar-toggle-btn:hover {
     color: #000;
     background: #005bb5;
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-}
-
-.toolbar-actions {
-    display: flex;
-    gap: 10px;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, .15)
 }
 
 .bible-display,
 .sidebar {
-    margin-top: 60px;
+    margin-top: 60px
 }
 
 .sidebar-toggle-btn {
@@ -242,48 +222,55 @@
     font-size: 1em;
     border-radius: 12px;
     margin: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition:
-        background 0.3s,
-        box-shadow 0.3s;
-    font-family: inherit;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, .1);
+    transition: background .3s, box-shadow .3s;
+    font-family: inherit
 }
 
 .toolbar {
-    justify-content: space-between;
+    justify-content: space-between
 }
 
 .toolbar-center {
-    display: flex;
     align-items: center;
     justify-content: center;
-    flex: 1;
+    flex-grow: 1;
+}
+
+.toolbar-right {
+    flex-shrink: 1;
 }
 
 .mobile-navigation-toggle {
-    display: none;
+    display: none
 }
 
 .copy-btn:disabled {
     background: #e0e0e0;
     color: #a0a0a0;
-    cursor: not-allowed;
+    cursor: not-allowed
 }
 
-@media (max-width: 768px) {
+.copy-btn:disabled:hover {
+    background: #e0e0e0;
+    color: #a0a0a0;
+    cursor: not-allowed
+}
+
+@media (max-width:768px) {
     .app-layout {
-        margin-left: 0;
+        margin-left: 0
     }
 
     .sidebar {
         position: fixed;
         transform: translateX(-100%);
-        transition: transform 0.3s;
+        transition: transform .3s
     }
 
     .sidebar.open {
         transform: translateX(0);
-        position: relative;
+        position: relative
     }
 
     .sidebar-toggle-btn {
@@ -291,28 +278,27 @@
         position: fixed;
         top: 10px;
         right: 10px;
-        z-index: 1000;
+        z-index: 1000
     }
 
     .mobile-navigation-toggle {
-        display: block;
+        display: block
     }
 
     .toolbar {
-        align-items: stretch;
+        align-items: stretch
     }
 
     .toolbar-center,
     .toolbar-left,
     .toolbar-right {
-        flex: none;
-        width: 100%;
-        justify-content: center;
+        justify-content: center
     }
 
     .toolbar-search {
         width: 100%;
         max-width: none;
+        min-width: 20%;
     }
 }
 
@@ -326,30 +312,26 @@
     align-items: center;
     justify-content: space-between;
     padding: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
     z-index: 1100;
     gap: 10px;
+    flex: 2;
 }
 
 .toolbar-center,
 .toolbar-left,
 .toolbar-right {
-    display: flex;
+
     align-items: center;
     gap: 10px;
-    flex: 1;
-    padding-right: 40px;
+    padding: 20px;
 }
 
-.toolbar-search {
-    flex: 1;
-    min-width: 80px;
-    max-width: 400px;
-}
-
-.copy-btn,
 .toolbar-btn {
-    flex: 0 0 auto;
+
+    flex-shrink: 1; /* Prevents the button from shrinking */
+    flex-grow: 0; /* Ensures the button does not grow */
+    overflow: hidden; /* Optionally hides any overflowing content */
     background: #fff;
     color: #007aff;
     border: none;
@@ -357,31 +339,21 @@
     border-radius: 5px;
     cursor: pointer;
     font-size: 1rem;
-    transition:
-        background-color 0.3s,
-        color 0.3s;
+    transition: background-color .3s, color .3s
 }
 
-.copy-btn:hover,
 .toolbar-btn:hover {
     background-color: #005bb5;
-    color: #fff;
+    color: #fff
 }
 
-@media (max-width: 768px) {
-    .toolbar-search {
-        flex: 1;
-        width: 100%;
-    }
-
-    .copy-btn,
+@media (max-width:768px) {
     .toolbar-btn {
-        font-size: 0.9rem;
-        padding: 8px 10px;
-    }
-
-    .bible-display {
-        padding: 20px;
+        white-space: nowrap; /* Prevents text wrapping */
+        overflow: hidden; /* Hides the overflowing text */
+        text-overflow: ellipsis; /* Adds an ellipsis (…) to indicate truncated text */
+        display: inline-block; /* Ensures proper ellipsis behavior */
+        max-width: 100%; /* Optional: sets a maximum width for truncation */
     }
 }
 
@@ -389,5 +361,5 @@
 .verse-item {
     touch-action: manipulation;
     -webkit-user-select: none;
-    user-select: none;
+    user-select: none
 }
