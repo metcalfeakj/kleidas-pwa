@@ -187,10 +187,12 @@
 
 .toolbar-search {
     border: none;
+    box-sizing: border-box;
+    /* Ensure padding is included in width/height */
     padding: 10px;
     border-radius: 5px;
     font-size: 16px;
-    width:100%;
+    width: 100%;
 }
 
 .toolbar,
@@ -297,7 +299,6 @@
 
     .toolbar-search {
         width: 100%;
-        max-width: none;
         min-width: 20%;
     }
 }
@@ -329,9 +330,12 @@
 
 .toolbar-btn {
 
-    flex-shrink: 1; /* Prevents the button from shrinking */
-    flex-grow: 0; /* Ensures the button does not grow */
-    overflow: hidden; /* Optionally hides any overflowing content */
+    flex-shrink: 1;
+    /* Prevents the button from shrinking */
+    flex-grow: 0;
+    /* Ensures the button does not grow */
+    overflow: hidden;
+    /* Optionally hides any overflowing content */
     background: #fff;
     color: #007aff;
     border: none;
@@ -349,11 +353,16 @@
 
 @media (max-width:768px) {
     .toolbar-btn {
-        white-space: nowrap; /* Prevents text wrapping */
-        overflow: hidden; /* Hides the overflowing text */
-        text-overflow: ellipsis; /* Adds an ellipsis (…) to indicate truncated text */
-        display: inline-block; /* Ensures proper ellipsis behavior */
-        max-width: 100%; /* Optional: sets a maximum width for truncation */
+        white-space: nowrap;
+        /* Prevents text wrapping */
+        overflow: hidden;
+        /* Hides the overflowing text */
+        text-overflow: ellipsis;
+        /* Adds an ellipsis (…) to indicate truncated text */
+        display: inline-block;
+        /* Ensures proper ellipsis behavior */
+        max-width: 100%;
+        /* Optional: sets a maximum width for truncation */
     }
 }
 
