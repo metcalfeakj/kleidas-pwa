@@ -14,6 +14,7 @@ interface Book {
   id?: number; // Optional primary key for Dexie
   BookID: number; // Unique identifier for the book
   BookName: string; // Name of the book (e.g., "Genesis", "John")
+  BookAbbr: string;
   TotalChapters: number; // Total number of chapters in the book
   Chapters: Chapter[]; // Array of chapters in the book
 }
