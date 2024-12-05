@@ -5,9 +5,11 @@
 	import { writable } from 'svelte/store';
 	import './style.css';
 	// Reactive store to track selected verses
-	import {selectedBook, selectedChapter, selectedVerses, isSidebarOpen} from '$lib/state';
+	let selectedVerses = writable<string[]>([]);
+	let books: Book[] = [];
+	let selectedBook = 'John';
+	let selectedChapter = 1;
 	let chapters: any[] = [];
-	let books: any[] = [];
 	let verses: any[] = [];
 	let error: string | null = null;
 
@@ -19,8 +21,8 @@
 		const cachedState = localStorage.getItem('bible-viewer-state');
 		if (cachedState) {
 			const { book, chapter } = JSON.parse(cachedState);
-			selectedBook.set(book || selectedBook);
-			selectedChapter.set(chapter || selectedChapter);
+			selectedBook = book || selectedBook;
+			selectedChapter = chapter || selectedChapter;
 		}
 	}
 
@@ -30,16 +32,17 @@
 			JSON.stringify({ book: selectedBook, chapter: selectedChapter })
 		);
 	}
+	let isSidebarOpen = false; // Tracks if the sidebar is open (mobile view)
 	let sidebarElement: HTMLElement | null = null; // Sidebar element reference
 
 	// Toggle sidebar visibility
 	function toggleSidebar() {
-		isSidebarOpen.set(!isSidebarOpen);
+		isSidebarOpen = !isSidebarOpen;
 	}
 	function handleOutsideClick(event: MouseEvent) {
 		const sidebarElement = document.querySelector('.bible-navigation');
 		if (sidebarElement && !sidebarElement.contains(event.target as Node)) {
-			isSidebarOpen.set(false); // Close the sidebar
+			isSidebarOpen = false; // Close the sidebar
 		}
 	}
 
@@ -74,7 +77,7 @@
 
 		// Do not reset chapter if it's already set
 		if (!chapters.includes(selectedChapter)) {
-			selectedChapter.set(1); // Reset to Chapter 1 only if current chapter is invalid
+			selectedChapter = 1; // Reset to Chapter 1 only if current chapter is invalid
 		}
 
 		await fetchVerses(); // Automatically load the chapter
@@ -86,7 +89,7 @@
 			const book = books.find((b) => b.BookName === selectedBook);
 			if (!book) throw new Error(`Book "${selectedBook}" not found.`);
 			const chapter = book.Chapters.find(
-				(ch: { ChapterNumber: any }) => ch.ChapterNumber === selectedChapter
+				(ch: { ChapterNumber: number }) => ch.ChapterNumber === selectedChapter
 			);
 			if (!chapter) throw new Error(`Chapter ${selectedChapter} not found in "${selectedBook}".`);
 			verses = chapter.Verses.map((verse: any) => ({ ...verse, copied: false }));
@@ -127,8 +130,8 @@
 				return;
 			}
 
-			selectedBook.set(book.BookName);
-			selectedChapter.set(chapterNumber || 1);
+			selectedBook = book.BookName;
+			selectedChapter = chapterNumber || 1;
 
 			updateChapters().then(() => {
 				if (startVerseNumber) {
@@ -306,8 +309,8 @@
 								class="book-item {selectedBook === book.BookName ? 'selected' : ''}"
 								on:click={() => {
 									// Select the book, reset to the first chapter, and clear selections
-									selectedBook.set(book.BookName);
-									selectedChapter.set(1); // Reset to the first chapter
+									selectedBook = book.BookName;
+									selectedChapter = 1; // Reset to the first chapter
 									clearSelectedVerses(); // Clear any previous selections
 									updateChapters(); // Load the new book's chapters
 								}}
@@ -327,8 +330,8 @@
 								class="book-item {selectedBook === book.BookName ? 'selected' : ''}"
 								on:click={() => {
 									// Select the book, reset to the first chapter, and clear selections
-									selectedBook.set(book.BookName);
-									selectedChapter.set(1); // Reset to the first chapter
+									selectedBook = book.BookName;
+									selectedChapter = 1; // Reset to the first chapter
 									clearSelectedVerses(); // Clear any previous selections
 									updateChapters(); // Load the new book's chapters
 								}}
@@ -348,10 +351,10 @@
 								class="chapter-item {selectedChapter === chapter ? 'selected' : ''}"
 								on:click={() => {
 									// Clear selected verses and update the chapter
-									selectedChapter.set(chapter);
+									selectedChapter = chapter;
 									clearSelectedVerses(); // Clear previous selections
 									fetchVerses(); // Load the new chapter
-									isSidebarOpen.set(false); /* Close sidebar after selection */
+									isSidebarOpen = false; /* Close sidebar after selection */
 								}}
 							>
 								{chapter}
