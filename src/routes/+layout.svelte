@@ -1,22 +1,22 @@
 <script lang="ts">
-  import { populateDatabase } from '$lib/db';
-  import { onMount } from 'svelte';
+	import { reloadDatabaseWithHashing } from '$lib/db';
+	import { onMount } from 'svelte';
 
-  let dbReady = false;
+	let dbReady = false;
 
-  // Wait for database population
-  async function initializeDatabase() {
-    await populateDatabase('/bible.json');
-    dbReady = true; // Set the flag once the database is ready
-  }
+	// Wait for database population
+	async function initializeDatabase() {
+		await reloadDatabaseWithHashing('/bible.json');
+		dbReady = true; // Set the flag once the database is ready
+	}
 
-  onMount(() => {
-    initializeDatabase();
-  });
+	onMount(() => {
+		initializeDatabase();
+	});
 </script>
 
 {#if dbReady}
-  <slot />
+	<slot />
 {:else}
-  <p>Loading Bible data...</p>
+	<p>Loading Bible data...</p>
 {/if}
