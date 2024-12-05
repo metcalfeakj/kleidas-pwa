@@ -239,11 +239,9 @@
     align-items: center;
     justify-content: center;
     flex-grow: 1;
-}
-
-.toolbar-right {
     flex-shrink: 1;
 }
+
 
 .mobile-navigation-toggle {
     display: none
@@ -301,7 +299,6 @@
 
     .toolbar-search {
         width: 100%;
-        min-width: 20%;
     }
 }
 
