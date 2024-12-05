@@ -255,7 +255,7 @@
 		const verseText = selectedVerseDetails.map((v) => `${v.number}: ${v.text}`).join('\n');
 
 		// Combine the header and the verse text
-		return `${reference}\n\n${verseText}`;
+		return `${reference}\n${verseText}`;
 	}
 </script>
 
