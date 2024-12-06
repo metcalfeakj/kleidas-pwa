@@ -274,6 +274,21 @@
 		// Fetch the new chapter's verses
 		updateChapters();
 	}
+
+	let isDisabled = false; // Tracks if the button should be disabled based on screen size
+
+// Update `isDisabled` based on the screen width
+function updateDisabledState() {
+	isDisabled = window.innerWidth > 768;
+	$bibleState.isSidebarOpen = false; 
+}
+
+// Listen for window resize events
+onMount(() => {
+	updateDisabledState(); // Set initial state
+	window.addEventListener('resize', updateDisabledState);
+	return () => window.removeEventListener('resize', updateDisabledState); // Cleanup
+});
 </script>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -386,9 +401,14 @@
 		<!-- Main Bible Display Area -->
 		<section class="bible-display">
 			<header class="display-header">
-				<h2 on:click|stopPropagation={toggleSidebar}>📜 {$bibleState.selectedBook} {$bibleState.selectedChapter}</h2>
 				<button class="nav-btn" class:hidden={$bibleState.isSidebarOpen} on:click={previousChapter}>⬅</button>
-				<button class="nav-btn" class:hidden={$bibleState.isSidebarOpen} on:click={nextChapter}>➡</button>
+				<button
+				class="nav-btn"
+				on:click|stopPropagation={toggleSidebar}
+				disabled={isDisabled}
+			>
+				{$bibleState.isSidebarOpen ? '❌ Close' : `📜 ${$bibleState.selectedBook} ${$bibleState.selectedChapter}`}
+			</button>				<button class="nav-btn" class:hidden={$bibleState.isSidebarOpen} on:click={nextChapter}>➡</button>
 			</header>
 			<article class="verse-list">
 				<div class="verse-container">

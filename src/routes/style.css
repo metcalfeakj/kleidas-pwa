@@ -425,4 +425,17 @@ body {
 
 .hidden {
     display: none;
+}
+
+.nav-btn:disabled {
+    background: #fff;
+    border: 1px solid #fff;
+    color: black;
+    /* Ensure text color remains black */
+}
+
+.nav-btn:disabled:hover {
+    /* Override hover styles when disabled */
+    background: #fff;
+    color: black;
   }
