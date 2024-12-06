@@ -177,8 +177,7 @@
 		const selectedText = formatSelectedVerses();
 		try {
 			await navigator.clipboard.writeText(selectedText);
-			alert('Verses copied to clipboard.');
-			clearSelectedVerses();
+			 alert('Verses copied to clipboard.');
 		} catch (err) {
 			alert('Failed to copy verses: ' + err);
 		}
@@ -312,6 +311,10 @@ onMount(() => {
 				disabled={$bibleState.selectedVerses.length === 0}
 				on:click={copySelectedVerses}>📋</button
 			>
+			<button
+			class="toolbar-btn" disabled={$bibleState.selectedVerses.length === 0}
+			on:click={clearSelectedVerses}>🧹</button
+		>
 		</div>
 	</div>
 

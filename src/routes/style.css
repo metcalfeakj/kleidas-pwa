@@ -295,6 +295,18 @@ body {
     cursor: not-allowed
 }
 
+.toolbar-btn:disabled {
+    background: #e0e0e0;
+    color: #a0a0a0;
+    cursor: not-allowed
+}
+
+.toolbar-btn:disabled:hover {
+    background: #e0e0e0;
+    color: #a0a0a0;
+    cursor: not-allowed
+}
+
 @media (max-width:768px) {
     .app-layout {
         margin-left: 0
