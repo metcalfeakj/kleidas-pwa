@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { db} from '$lib/db';
+	import { db } from '$lib/db';
 	import { bibleState, type Verse } from '$lib/bibleState';
 	import { bookMapping } from '$lib/bookMapping';
 	import './style.css';
@@ -221,8 +221,62 @@
 	onDestroy(() => {
 		document.removeEventListener('click', handleOutsideClick);
 	});
+
+	function previousChapter() {
+		bibleState.update((state) => {
+			const currentBookIndex = state.books.findIndex((b) => b.BookName === state.selectedBook);
+
+			if (state.selectedChapter > 1) {
+				// Move to the previous chapter in the same book
+				return { ...state, selectedChapter: state.selectedChapter - 1, selectedVerses: [] };
+			} else if (currentBookIndex > 0) {
+				// Move to the last chapter of the previous book
+				const previousBook = state.books[currentBookIndex - 1];
+				return {
+					...state,
+					selectedBook: previousBook.BookName,
+					selectedChapter: previousBook.TotalChapters,
+					selectedVerses: []
+				};
+			} else {
+				// Already at the first chapter of the first book, no further navigation
+				return state;
+			}
+		});
+
+		// Fetch the new chapter's verses
+		updateChapters();
+	}
+
+	function nextChapter() {
+		bibleState.update((state) => {
+			const currentBookIndex = state.books.findIndex((b) => b.BookName === state.selectedBook);
+
+			const currentBook = state.books[currentBookIndex];
+			if (state.selectedChapter < currentBook.TotalChapters) {
+				// Move to the next chapter in the same book
+				return { ...state, selectedChapter: state.selectedChapter + 1, selectedVerses: [] };
+			} else if (currentBookIndex < state.books.length - 1) {
+				// Move to the first chapter of the next book
+				const nextBook = state.books[currentBookIndex + 1];
+				return {
+					...state,
+					selectedBook: nextBook.BookName,
+					selectedChapter: 1,
+					selectedVerses: []
+				};
+			} else {
+				// Already at the last chapter of the last book, no further navigation
+				return state;
+			}
+		});
+
+		// Fetch the new chapter's verses
+		updateChapters();
+	}
 </script>
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <main class="bible-app">
 	<!-- Toolbar Section -->
 	<div class="toolbar">
@@ -335,7 +389,9 @@
 		<!-- Main Bible Display Area -->
 		<section class="bible-display">
 			<header class="display-header">
+				<button class="nav-btn" on:click={previousChapter}>⬅</button>
 				<h2>{$bibleState.selectedBook} {$bibleState.selectedChapter}</h2>
+				<button class="nav-btn" on:click={nextChapter}>➡</button>
 			</header>
 			<article class="verse-list">
 				<div class="verse-container">
@@ -353,8 +409,6 @@
 		</section>
 	</div>
 </main>
+
 <style>
-	.toolbar {
-		background-color: crimson;
-	}
 </style>
