@@ -109,6 +109,7 @@ body {
     transition: background-color .2s, color .2s
 }
 
+.display-header:hover h2,
 .book-item:hover,
 .chapter-item:hover {
     background: #f0f0f0;
@@ -385,20 +386,6 @@ body {
     color: #fff
 }
 
-@media (max-width:768px) {
-    .toolbar-btn {
-        white-space: nowrap;
-        /* Prevents text wrapping */
-        overflow: hidden;
-        /* Hides the overflowing text */
-        text-overflow: ellipsis;
-        /* Adds an ellipsis (…) to indicate truncated text */
-        display: inline-block;
-        /* Ensures proper ellipsis behavior */
-        max-width: 100%;
-        /* Optional: sets a maximum width for truncation */
-    }
-}
 
 .verse-container,
 .verse-item {
@@ -421,3 +408,21 @@ body {
     background: #f1f1f1;
 }
 
+@media (max-width:768px) {
+    .toolbar-btn {
+        white-space: nowrap;
+        /* Prevents text wrapping */
+        overflow: hidden;
+        /* Hides the overflowing text */
+        text-overflow: ellipsis;
+        /* Adds an ellipsis (…) to indicate truncated text */
+        display: inline-block;
+        /* Ensures proper ellipsis behavior */
+        max-width: 100%;
+        /* Optional: sets a maximum width for truncation */
+    }
+}
+
+.hidden {
+    display: none;
+  }

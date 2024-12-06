@@ -281,9 +281,6 @@
 	<!-- Toolbar Section -->
 	<div class="toolbar">
 		<div class="toolbar-left">
-			<div class="mobile-navigation-toggle">
-				<button class="toolbar-btn" on:click|stopPropagation={toggleSidebar}>📜</button>
-			</div>
 		</div>
 		<div class="toolbar-center">
 			<input
@@ -390,8 +387,8 @@
 		<section class="bible-display">
 			<header class="display-header">
 				<h2 on:click|stopPropagation={toggleSidebar}>📜 {$bibleState.selectedBook} {$bibleState.selectedChapter}</h2>
-				<button class="nav-btn" on:click={previousChapter}>⬅</button>
-				<button class="nav-btn" on:click={nextChapter}>➡</button>
+				<button class="nav-btn" class:hidden={$bibleState.isSidebarOpen} on:click={previousChapter}>⬅</button>
+				<button class="nav-btn" class:hidden={$bibleState.isSidebarOpen} on:click={nextChapter}>➡</button>
 			</header>
 			<article class="verse-list">
 				<div class="verse-container">
