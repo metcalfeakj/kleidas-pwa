@@ -23,8 +23,7 @@ interface Book {
 const db = new Dexie('BibleDatabase');
 
 db.version(1).stores({
-	books: '++id, BookName', // Table for books
-	metadata: 'key' // Table for metadata (e.g., hash storage)
+	books: '++id, BookName' // Table for books
 });
 
 // Function to generate a hash of a dataset
@@ -33,39 +32,44 @@ async function generateHash(data: unknown): Promise<string> {
 	return hash;
 }
 
+function stripIds(data: Book[]): Book[] {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	return data.map(({ id, ...rest }) => rest);
+}
+
 // Function to reload the database if there is a mismatch
 async function reloadDatabaseWithHashing(jsonUrl: string) {
-  try {
-    // Fetch JSON data
-    const response = await fetch(jsonUrl);
-    const jsonData: Book[] = await response.json();
+	try {
+		// Fetch JSON data
+		const response = await fetch(jsonUrl);
+		const jsonData: Book[] = await response.json();
 
-    // Generate hash for JSON data
-    const jsonHash = await generateHash(jsonData);
+		// Generate hash for JSON data
+		const jsonHash = await generateHash(jsonData);
 
-    // Retrieve cached data from IndexedDB
-    const cachedData: Book[] = await db.table('books').toArray();
+		// Retrieve cached data from IndexedDB
+		const cachedData: Book[] = await db.table('books').toArray();
 
-    // Generate hash for cached data
-    const cachedHash = await generateHash(cachedData);
+		// Generate hash for cached data
+		const cachedHash = await generateHash(stripIds(cachedData));
 
-    // Compare hashes
-    if (jsonHash !== cachedHash) {
-      console.log('Data mismatch detected. Reloading database...');
+		// Compare hashes
+		if (jsonHash !== cachedHash) {
+			console.log('Data mismatch detected. Reloading database...');
 
-      // Clear the old data
-      await db.table('books').clear();
+			// Clear the old data
+			await db.table('books').clear();
 
-      // Populate the database with new JSON data
-      await db.table('books').bulkAdd(jsonData);
-      console.log('Database updated successfully!');
-    } else {
-      console.log('Cached data matches JSON. No action needed.');
-    }
-  } catch (error) {
-    console.error('Error reloading Bible data:', error);
-    throw error;
-  }
+			// Populate the database with new JSON data
+			await db.table('books').bulkAdd(jsonData);
+			console.log('Database updated successfully!');
+		} else {
+			console.log('Cached data matches JSON. No action needed.');
+		}
+	} catch (error) {
+		console.error('Error reloading Bible data:', error);
+		throw error;
+	}
 }
 
 export type { Book, Chapter, Verse };

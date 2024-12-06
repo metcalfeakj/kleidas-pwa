@@ -389,8 +389,8 @@
 		<!-- Main Bible Display Area -->
 		<section class="bible-display">
 			<header class="display-header">
+				<h2 on:click|stopPropagation={toggleSidebar}>📜 {$bibleState.selectedBook} {$bibleState.selectedChapter}</h2>
 				<button class="nav-btn" on:click={previousChapter}>⬅</button>
-				<h2>{$bibleState.selectedBook} {$bibleState.selectedChapter}</h2>
 				<button class="nav-btn" on:click={nextChapter}>➡</button>
 			</header>
 			<article class="verse-list">

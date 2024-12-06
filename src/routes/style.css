@@ -155,6 +155,7 @@ body {
     font-size: 1.5em;
     color: #333;
     text-align: center;
+    text-wrap: nowrap;
     flex-grow: 1;
     /* Allow h2 to take up available space between buttons */
 }
@@ -419,3 +420,4 @@ body {
 .nav-btn:hover {
     background: #f1f1f1;
 }
+
