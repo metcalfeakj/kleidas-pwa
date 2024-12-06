@@ -154,7 +154,10 @@
 					verse.VerseNumber >= startVerse && (!endVerse || verse.VerseNumber <= endVerse);
 				if (isSelected && !scrolled) {
 					scrolled = true;
-					verse.domElement?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+					verse.domElement?.scrollIntoView({
+						behavior: 'smooth',
+						block: 'nearest'
+					});
 				}
 				return { ...verse, selected: isSelected };
 			});
@@ -177,7 +180,7 @@
 		const selectedText = formatSelectedVerses();
 		try {
 			await navigator.clipboard.writeText(selectedText);
-			 alert('Verses copied to clipboard.');
+			alert('Verses copied to clipboard.');
 		} catch (err) {
 			alert('Failed to copy verses: ' + err);
 		}
@@ -276,26 +279,24 @@
 
 	let isDisabled = false; // Tracks if the button should be disabled based on screen size
 
-// Update `isDisabled` based on the screen width
-function updateDisabledState() {
-	isDisabled = window.innerWidth > 768;
-	$bibleState.isSidebarOpen = false; 
-}
+	// Update `isDisabled` based on the screen width
+	function updateDisabledState() {
+		isDisabled = window.innerWidth > 768;
+		$bibleState.isSidebarOpen = false;
+	}
 
-// Listen for window resize events
-onMount(() => {
-	updateDisabledState(); // Set initial state
-	window.addEventListener('resize', updateDisabledState);
-	return () => window.removeEventListener('resize', updateDisabledState); // Cleanup
-});
+	// Listen for window resize events
+	onMount(() => {
+		updateDisabledState(); // Set initial state
+		window.addEventListener('resize', updateDisabledState);
+		return () => window.removeEventListener('resize', updateDisabledState); // Cleanup
+	});
 </script>
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <main class="bible-app">
 	<!-- Toolbar Section -->
 	<div class="toolbar">
-		<div class="toolbar-left">
-		</div>
+		<div class="toolbar-left"></div>
 		<div class="toolbar-center">
 			<input
 				type="text"
@@ -312,9 +313,10 @@ onMount(() => {
 				on:click={copySelectedVerses}>📋</button
 			>
 			<button
-			class="toolbar-btn" disabled={$bibleState.selectedVerses.length === 0}
-			on:click={clearSelectedVerses}>🧹</button
-		>
+				class="toolbar-btn"
+				disabled={$bibleState.selectedVerses.length === 0}
+				on:click={clearSelectedVerses}>🧹</button
+			>
 		</div>
 	</div>
 
@@ -404,14 +406,17 @@ onMount(() => {
 		<!-- Main Bible Display Area -->
 		<section class="bible-display">
 			<header class="display-header">
-				<button class="nav-btn" class:hidden={$bibleState.isSidebarOpen} on:click={previousChapter}>⬅</button>
-				<button
-				class="nav-btn"
-				on:click|stopPropagation={toggleSidebar}
-				disabled={isDisabled}
-			>
-				{$bibleState.isSidebarOpen ? '❌ Close' : `📜 ${$bibleState.selectedBook} ${$bibleState.selectedChapter}`}
-			</button>				<button class="nav-btn" class:hidden={$bibleState.isSidebarOpen} on:click={nextChapter}>➡</button>
+				<button class="nav-btn" class:hidden={$bibleState.isSidebarOpen} on:click={previousChapter}
+					>⬅</button
+				>
+				<button class="nav-btn" on:click|stopPropagation={toggleSidebar} disabled={isDisabled}>
+					{$bibleState.isSidebarOpen
+						? '❌ Close'
+						: `📜 ${$bibleState.selectedBook} ${$bibleState.selectedChapter}`}
+				</button>
+				<button class="nav-btn" class:hidden={$bibleState.isSidebarOpen} on:click={nextChapter}
+					>➡</button
+				>
 			</header>
 			<article class="verse-list">
 				<div class="verse-container">

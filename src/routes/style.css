@@ -1,9 +1,10 @@
-html,
-body {
+html, body {
+    width: 100%;
     height: 100%;
     margin: 0;
     padding: 0;
-    overflow: hidden;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    overscroll-behavior: none;  
 }
 
 .bible-app,
@@ -42,7 +43,7 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     flex-direction: column;
     padding-top: 20px;
-    margin: 0 auto;
+    box-sizing: border-box;
     overflow-y: auto
 }
 
@@ -124,8 +125,8 @@ body {
 }
 
 .bible-display {
-    flex: 1 1 auto;
-    overflow-y: auto;
+    flex: auto;
+
     /* Enables vertical scrolling */
     overflow-x: hidden;
     /* Hides horizontal scrolling */
